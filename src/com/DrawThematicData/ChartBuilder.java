@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -19,16 +21,17 @@ public class ChartBuilder {
 		
 	}
 	
-	private static JFreeChart buildBarChart(Map<String, Double> columnValues, List<String>rows){
+	private static JFreeChart buildBarChart(Map<String, Double> columnValues, List<String>rows, ChartInfo info){
 		
 	}
 	
-	private static JFreeChart buildLineChart(Map<String, Double> columnValues, List<String>rows){
+	private static JFreeChart buildLineChart(Map<String, Double> columnValues, List<String>rows, ChartInfo info){
 		CategoryDataset dataset = getCategoryDataset(columnValues, rows);
-		
+		JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+		return setChart(chart, info);
 	}
 	
-	private static JFreeChart buildPieChart(Map<String, Double> columnValues){
+	private static JFreeChart buildPieChart(Map<String, Double> columnValues, ChartInfo info){
 		
 	}
 	
