@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
@@ -26,10 +27,30 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.general.DatasetGroup;
 
+import com.DrawThematicData.ChartBuilder;
+import com.DrawThematicData.ChartInfo;
+import com.sun.tools.javac.code.Attribute.Array;
+
 public class Main {
 
 	public static void main(String args[]) {
-		drawPictureTest();
+		//drawPictureTest();
+		
+		List<String> keys = Arrays.asList("1月", "2月", "3月","4月","5月");
+		List<Double> values = Arrays.asList(21.0D, 50.0D, 152.0D, 184.0D, 299.0D);
+		List<String> rows = Arrays.asList("Series 1");
+		ChartInfo info = ChartInfo.createLineInfo("标题", "x", "y");
+		
+		JFreeChart chart = ChartBuilder.build(keys, values, rows, info);
+		
+		FileOutputStream out = null;
+		try {
+			File outFile = new File("/users/yangyuxin/test.jpg");
+			out = new FileOutputStream(outFile);
+			ChartUtilities.writeChartAsJPEG(out, chart, 600, 400);
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
 	}
 
 	public static void drawPictureTest() {
