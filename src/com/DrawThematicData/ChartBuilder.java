@@ -2,8 +2,6 @@ package com.DrawThematicData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -37,7 +35,6 @@ public class ChartBuilder {
 		return null;
 	}
 	
-<<<<<<< HEAD
 	private static JFreeChart buildBarChart(List<String>keys, List<Double>values, List<String>rows, ChartInfo info){
 		CategoryDataset dataset = getCategoryDataset(keys, values,rows);
 		JFreeChart chart = ChartFactory.createBarChart(info.title, info.categoryAxisLabel, info.valueAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
@@ -54,20 +51,6 @@ public class ChartBuilder {
 		PieDataset dataset = getPieDataset(keys, values);
 		JFreeChart chart = ChartFactory.createPieChart(info.title, dataset, true, true, false);
 		return setChart(chart, info);
-=======
-	private static JFreeChart buildBarChart(Map<String, Double> columnValues, List<String>rows, ChartInfo info){
-		
-	}
-	
-	private static JFreeChart buildLineChart(Map<String, Double> columnValues, List<String>rows, ChartInfo info){
-		CategoryDataset dataset = getCategoryDataset(columnValues, rows);
-		JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
-		return setChart(chart, info);
-	}
-	
-	private static JFreeChart buildPieChart(Map<String, Double> columnValues, ChartInfo info){
-		
->>>>>>> 42d09fdb29120f63e2edbc4da3aca9c3e7c68548
 	}
 	
 	private static CategoryDataset getCategoryDataset(List<String>keys, List<Double>values, List<String>rows){
