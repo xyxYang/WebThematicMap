@@ -29,7 +29,6 @@ import org.jfree.data.general.DatasetGroup;
 
 import com.DrawThematicData.ChartBuilder;
 import com.DrawThematicData.ChartInfo;
-import com.sun.tools.javac.code.Attribute.Array;
 
 public class Main {
 

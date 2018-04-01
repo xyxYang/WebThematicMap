@@ -24,4 +24,21 @@ public class DBConBuilder {
 		}
 		return con;
 	}
+	
+	public DBConn buildDBConn(){
+		Connection con = null;
+		try{
+			Class.forName("org.postgresql.Driver").newInstance();
+			con = DriverManager.getConnection(url, user, password);
+		}
+		catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+		if(con != null){
+			return new DBConn(con);
+		}
+		else{
+			return null;
+		}
+	}
 }
