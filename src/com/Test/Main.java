@@ -33,6 +33,8 @@ import com.DrawThematicData.ChartInfo;
 public class Main {
 
 	public static void main(String args[]) {
+		datasetTest();
+		/*
 		//drawPictureTest();
 		
 		List<String> keys = Arrays.asList("1月", "2月", "3月","4月","5月");
@@ -50,6 +52,7 @@ public class Main {
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
 		}
+		*/
 	}
 
 	public static void drawPictureTest() {
