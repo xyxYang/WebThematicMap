@@ -14,7 +14,7 @@ import com.DBManage.ResultType;
 public class GeoTable {
 	private String name;
 	private List<GeoData> datas = new ArrayList<GeoData>();
-	private static final String selectSQL = "select __gid, name, midLon, midLat, ST_AsGeoJson(geom) as geojson from %s";
+	private static final String selectSQL = "select id, name, midLon, midLat, ST_AsGeoJson(geom) as geojson from %s";
 	
 	public GeoTable(String tableName){
 		name = tableName;
