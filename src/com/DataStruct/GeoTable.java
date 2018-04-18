@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.DBManage.DBConBuilder;
 import com.DBManage.ResultType;
 
@@ -29,11 +31,12 @@ public class GeoTable {
 			ResultSet rs = st.executeQuery(String.format(selectSQL, name));
 			while(rs.next()){
 				GeoData geoData = new GeoData();
-				geoData.id = rs.getInt(0);
-				geoData.name = rs.getString(1);
-				geoData.midLon = rs.getDouble(2);
-				geoData.midLat = rs.getDouble(3);
-				geoData.geojson = rs.getString(4);
+				geoData.id = rs.getInt(1);
+				geoData.name = rs.getString(2);
+				
+				geoData.midLon = rs.getDouble(3);
+				geoData.midLat = rs.getDouble(4);
+				geoData.geojson = rs.getString(5);
 				datas.add(geoData);
 			}
 			if(datas.size() != 0){
@@ -70,4 +73,25 @@ public class GeoTable {
 	public String getName(){
 		return new String(name);
 	}
+	
+	public List<GeoData> getDatas(){
+		return new ArrayList<GeoData>(this.datas);
+	}
+	/*
+	public double getMinX(){
+		
+	}
+	
+	public double getMinY(){
+		
+	}
+	
+	public double getMaxX(){
+		
+	}
+	
+	public double getMaxY(){
+		
+	}
+	*/
 }
