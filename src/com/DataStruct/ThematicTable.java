@@ -5,7 +5,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import com.DBManage.DBConBuilder;
 import com.DBManage.ResultType;
@@ -39,7 +42,7 @@ public class ThematicTable {
 			while (rs.next()) {
 				ThematicData data = new ThematicData();
 				data.id = rs.getInt("id");
-				data.name = rs.getString("name");
+				//data.name = rs.getString("name");
 				for(String fieldName:fields){
 					data.datas.add(rs.getDouble(fieldName));
 				}
@@ -53,6 +56,32 @@ public class ThematicTable {
 			System.out.print(e.getMessage());
 			return ResultType.ConnectFailed;
 		}
+	}
+	
+	public int setGeoData(GeoTable geoTable){
+		Map<Integer, GeoData> geoDataIndexs = getIndexs(geoTable);
+		int count = 0;
+		for(ThematicData data : datas){
+			GeoData geoData = geoDataIndexs.get(data.id);
+			if(geoData == null){
+				continue;
+			}
+			data.lon = geoData.midLon;
+			data.lat = geoData.midLat;
+			data.name = geoData.name;
+			++ count;
+		}
+		return count;
+	}
+	
+	private Map<Integer, GeoData> getIndexs(GeoTable geoTable){
+		List<GeoData> geoDatas = geoTable.getDatas();
+		Map<Integer, GeoData> ret = new HashMap<Integer, GeoData>();
+		for(GeoData data : geoDatas){
+			int id = data.id;
+			ret.put(id, data);
+		}
+		return ret;
 	}
 	
 	public int getFieldIndex(String fieldName){
