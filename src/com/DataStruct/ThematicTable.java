@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.json.JSONObject;
+
 import com.DBManage.DBConBuilder;
 import com.DBManage.ResultType;
 
@@ -18,7 +20,7 @@ public class ThematicTable {
 	private List<String> fields = new ArrayList<String>();
 	private List<ThematicData> datas = new ArrayList<ThematicData>();
 	private static final String selectSQL = "select * from %s";
-
+	
 	public ThematicTable(String tableName) {
 		this.name = tableName;
 	}
@@ -34,18 +36,20 @@ public class ThematicTable {
 			ResultSet rs = st.executeQuery(String.format(selectSQL, name));
 			ResultSetMetaData metaData = rs.getMetaData();
 			for (int i = 1; i <= metaData.getColumnCount(); i++) {
-				String columnName = metaData.getCatalogName(i);
+				String columnName = metaData.getColumnName(i);
 				if(!(columnName.equals("id") || columnName.equals("name"))){
 					fields.add(columnName);
 				}
 			}
 			while (rs.next()) {
 				ThematicData data = new ThematicData();
-				data.id = rs.getInt("id");
+				data.id = rs.getInt("gid");
 				//data.name = rs.getString("name");
 				for(String fieldName:fields){
+					//System.out.print(fieldName);
 					data.datas.add(rs.getDouble(fieldName));
 				}
+				datas.add(data);
 			}
 			if (datas.size() != 0) {
 				return ResultType.Success;
@@ -94,5 +98,14 @@ public class ThematicTable {
 	
 	public List<ThematicData> getDatas(){
 		return new ArrayList<ThematicData>(datas);
+	}
+	
+	public List<JSONObject> getJsonDatas(){
+		List<JSONObject> ret = new ArrayList<JSONObject>();
+		for(ThematicData data:datas){
+			JSONObject json = data.toJson(fields);
+			ret.add(json);
+		}
+		return ret;
 	}
 }

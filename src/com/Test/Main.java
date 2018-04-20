@@ -27,13 +27,15 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.general.DatasetGroup;
 
+import com.DataStruct.DataUtils;
+import com.DataStruct.ThematicTable;
 import com.DrawThematicData.ChartBuilder;
 import com.DrawThematicData.ChartInfo;
 
 public class Main {
 
 	public static void main(String args[]) {
-		datasetTest();
+		//datasetTest();
 		/*
 		//drawPictureTest();
 		
@@ -53,6 +55,14 @@ public class Main {
 			System.out.print(e.getMessage());
 		}
 		*/
+		ThematicTest();
+	}
+	
+	public static void ThematicTest(){
+		String thematicTableName = "province_thematic";
+		String mapTableName = "province";
+		ThematicTable thematicTable = DataUtils.getThematicTable(mapTableName, thematicTableName);
+		System.out.print(DataUtils.toJson(thematicTable.getJsonDatas()));
 	}
 
 	public static void drawPictureTest() {

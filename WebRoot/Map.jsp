@@ -81,13 +81,13 @@ List<GeoData> geoDatas = geoTable.getDatas();
        		map.addControl(zoomBox);                                 //添加放大方法控件
        		map.addControl(new OpenLayers.Control.NavToolbar());     //添加拉框放大工具
        		map.addControl(new OpenLayers.Control.Scale);            //添加比例尺
-       		
+
        		map.zoomToExtent(bounds);		//缩放到全图显示
-       		getCharts();
+       		//getCharts();
 		}
 	</script> 
 	<script type="text/javascript">
-		function addThematicData(){				
+		function addThematicData(table){				
 			var req = new XMLHttpRequest();
 			var url = "data/getThematicDatas.jsp?" + "table=" + table;
 			req.open("GET", url, true);
@@ -96,16 +96,18 @@ List<GeoData> geoDatas = geoTable.getDatas();
 				if(req.readyState == 4)
 				{
 					var datas = req.responseText;  //返回文本数据
+					datas = eval("(" + datas + ")");
 					addMapCharts(datas, 100, 100);
 				}
 			};
 		}
 		
 		function addMapCharts(datas, xSize, ySize){
+			removeAllPopups();
 			for(var i=0; i<datas.length; ++i){
 				var data = datas[i];
 				var chartID = "chart" + data.id;
-				var content = "<div class='mapChart' id='" + chart_id + "'></div>";
+				var content = "<div class='mapChart' id='" + chartID + "'></div>";
 				var popup = new OpenLayers.Popup(chartID,
 					new OpenLayers.LonLat(data.lon, data.lat),
 					new OpenLayers.Size(xSize, ySize),
@@ -115,12 +117,11 @@ List<GeoData> geoDatas = geoTable.getDatas();
                 popup.setBorder("0px #0066ff solid");  
                 popup.keepInMap = false;  
                 map.addPopup(popup,false);
-                
                 setChart(chartID, data);
 			}
 		}
 		
-		function setChart(ChartID, data){
+		function setChart(chartID, data){
 			var option = {
 			    tooltip: {
 			      trigger: 'item',
@@ -168,13 +169,20 @@ List<GeoData> geoDatas = geoTable.getDatas();
 			var chart = echarts.init(document.getElementById(chartID));
 			chart.setOption(option);
 		}
+		
+		function removeAllPopups(){
+			var pops = map.popups;
+			for(var i=0; i<pops.length; ++i){
+				map.removePopup(pops[i]);
+			}
+		}
 	</script> 
   </head>  
 
   <body onload="load()">
   	<div id='map' style='width:1300px;height:500px;'></div>
   	<div id='chart' style = 'width:200px;height:200px'></div>
-  	<button onclick="getCharts()">点击</button>
+  	<button onclick="addThematicData()">专题数据</button>
     This is my JSP page. <br>
   </body>
 </html>
