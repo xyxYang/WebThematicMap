@@ -1,5 +1,6 @@
 package com.DataStruct;
 
+import java.awt.Color;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -45,11 +46,23 @@ public class DataUtils {
 			System.out.print("数据库连接错误");
 			return null;
 		}
-		return null;
+		return geoTable;
 	}
 	
 	public static String toJson(List<JSONObject> jsons){
 		JSONArray ja = new JSONArray(jsons);
 		return ja.toString();
+	}
+	
+	public static String colorToString(Color color){
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		StringBuilder sb = new StringBuilder();
+		sb.append('#');
+		sb.append(Integer.toHexString(r));
+		sb.append(Integer.toHexString(g));
+		sb.append(Integer.toHexString(b));
+		return sb.toString();
 	}
 }
