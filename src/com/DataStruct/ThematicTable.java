@@ -37,7 +37,7 @@ public class ThematicTable {
 			ResultSetMetaData metaData = rs.getMetaData();
 			for (int i = 1; i <= metaData.getColumnCount(); i++) {
 				String columnName = metaData.getColumnName(i);
-				if(!(columnName.equals("id") || columnName.equals("name"))){
+				if(!(columnName.equals("gid") || columnName.equals("name"))){
 					fields.add(columnName);
 				}
 			}
@@ -105,6 +105,21 @@ public class ThematicTable {
 		for(ThematicData data:datas){
 			JSONObject json = data.toJson(fields);
 			ret.add(json);
+		}
+		return ret;
+	}
+	
+	public Map<Integer, Double> getList(String field){
+		int index = fields.indexOf(field);
+		if(index == -1){
+			return null;
+		}
+		
+		Map<Integer, Double> ret = new HashMap<Integer, Double>();
+		for(ThematicData thematicData : datas){
+			int gid = thematicData.id;
+			double retData = thematicData.datas.get(index);
+			ret.put(gid, retData);
 		}
 		return ret;
 	}

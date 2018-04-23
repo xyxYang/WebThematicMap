@@ -149,6 +149,15 @@ List<GeoData> geoDatas = geoTable.getDatas();
 			}
 		}
 		
+		function getNames(datas){
+			var ret = new Array();
+			for(var i=0; i<datas.length; ++i){
+				d = datas[i];
+				ret.push(d.name);
+			}
+			return ret;
+		}
+		
 		function setPieChart(chartID, data){
 			var option = {
 			    tooltip: {
@@ -213,7 +222,7 @@ List<GeoData> geoDatas = geoTable.getDatas();
 				xAxis:{
             		type : 'category',
             		boundaryGap : false,
-            		data:['gdp08', 'gdp09', 'gdp10', 'gdp11', 'gdp12', 'gdp13', 'gdp14', 'gdp15']
+            		data: getNames(data.data)
             	},
     			yAxis:{
             		type:'value'
@@ -239,7 +248,7 @@ List<GeoData> geoDatas = geoTable.getDatas();
 				xAxis:{
             		type : 'category',
             		boundaryGap : false,
-            		data:['gdp08', 'gdp09', 'gdp10', 'gdp11', 'gdp12', 'gdp13', 'gdp14', 'gdp15']
+            		data: getNames(data.data)
             	},
     			yAxis:{
             		type:'value'

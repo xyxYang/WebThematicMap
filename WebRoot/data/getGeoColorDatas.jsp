@@ -1,3 +1,6 @@
+<%@page import="com.DataCalculate.KindCalculator"%>
+<%@page import="com.DataCalculate.KindInfo"%>
+<%@page import="com.sun.org.apache.bcel.internal.generic.RET"%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ page import="com.DataStruct.*" %>
 <%@ page import="org.json.*" %>
@@ -9,14 +12,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 String thematicTableName = "province_thematic";
 String mapTableName = "province";
 GeoTable geoTable = DataUtils.getGeoTable(mapTableName);
-List<GeoData> geoDatas = geoTable.getDatas();
-List<JSONObject> ret = new ArrayList<JSONObject>();
-for(GeoData geoData : geoDatas){
-	JSONObject geoObject = new JSONObject(geoData.toJson());
-	JSONObject jo = new JSONObject();
-	jo.put("geometry", geoObject);
-	jo.put("color", "#ff0000");
-	ret.add(jo);
+ThematicTable thematicTable = DataUtils.getThematicTable(mapTableName, thematicTableName);
+Map<Integer, Double> gid2data = thematicTable.getList("gdp08");
+
+List<JSONObject> geolist = DataUtils.getGeometryDatas(geoTable, gid2data);
+JSONArray geoJa = new JSONArray(geolist);
+
+List<KindInfo> kindList = KindCalculator.EqualDistanceClassification(gid2data.values(), 5);
+List<JSONObject> kindjsonList = new ArrayList<JSONObject>();
+for(KindInfo info : kindList){
+	kindjsonList.add(new JSONObject(info.toJson()));
 }
-out.print(DataUtils.toJson(ret));
+JSONArray kindJa = new JSONArray(kindjsonList);
+
+JSONObject ret = new JSONObject();
+ret.put("features", geoJa);
+ret.put("kindInfos", kindJa);
+
+out.print(ret.toString());
 %>

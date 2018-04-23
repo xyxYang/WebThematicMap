@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-class ThematicData {
+public class ThematicData {
 	public int id;
 	public String name;
 	public double lon;

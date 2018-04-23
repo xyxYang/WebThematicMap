@@ -70,6 +70,24 @@ public class GeoTable {
 		return null;
 	}
 	
+	public String getGeoJson(String name){
+		for(GeoData geoData:datas){
+			if(geoData.name == name){
+				return geoData.geojson;
+			}
+		}
+		return null;
+	}
+	
+	public String getGeoJson(int id){
+		for(GeoData geoData:datas){
+			if(geoData.id == id){
+				return geoData.geojson;
+			}
+		}
+		return null;
+	}
+	
 	public String getName(){
 		return new String(name);
 	}

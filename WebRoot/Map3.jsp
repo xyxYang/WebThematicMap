@@ -8,6 +8,7 @@
 <html>
   <head>
     
+    <meta charset='utf-8'></meta>
     <title>My JSP 'Map.jsp' starting page</title>
     <script type='text/javascript' src='openlayers/lib/OpenLayers.js'></script>  <!--src最好指向自己机器上对应的js库 -->
 	<script src='lib/echarts.js'></script>
@@ -34,8 +35,7 @@
 				},
 				  {isBaseLayer: true}   //是否基础层，必须设置
 				);
-				
-			map.addLayer(wms);
+			map.addLayer(wms);	//增加这个wms图层到map对象
 
 			map.addControl(new OpenLayers.Control.LayerSwitcher());  //增加图层控制
        		map.addControl(new OpenLayers.Control.MousePosition());  //增加鼠标移动显示坐标      
@@ -52,84 +52,71 @@
 
        		map.zoomToExtent(bounds);		//缩放到全图显示
 		}
-		
-		function addThematicData(table){				
+	</script> 
+	<script type="text/javascript">
+		function addThematicData(option, table){				
 			var req = new XMLHttpRequest();
-			var url = "data/getGeoColorDatas.jsp?" + "table=" + table;
+			var url = "pic/getThematicPics.jsp?" + "table=" + table;
 			req.open("GET", url, true);
 			req.send(null);
 			req.onreadystatechange = function f(){
 				if(req.readyState == 4)
 				{
-					var resp = req.responseText;  //返回文本数据
-					resp = eval("(" + resp + ")");
-					var geoDatas = resp.features;
-					var kindInfos = resp.kindInfos;
-					var rules = getRules(kindInfos);
-					addVector(geoDatas, rules);
+					var datas = req.responseText;  //返回文本数据
+					datas = eval("(" + datas + ")");
+					removeAllPopups();
+					addMapCharts(option, datas, 50, 50);
+					map.events.register("zoomend", map, function(){
+						removeAllPopups();
+                    	addMapCharts(option, datas, 150, 150);  
+            		});
 				}
 			};  
 		}
 		
-		function getRules(kindInfos){
-			var rules = new Array();
-			for(var i=0; i<kindInfos.length; ++i){
-				var kindInfo = kindInfos[i];
-				alert(kindInfo.lower);
-				var rule = new OpenLayers.Rule({
-					filter: new OpenLayers.Filter.Comparison({
-						type: OpenLayers.Filter.Comparison.BETWEEN,
-						property: "data",
-						lowerBoundary: kindInfo.lower,  
-                    	upperBoundary: kindInfo.upper
-                    }), 
-                    symbolizer:{  
-                        fillColor: kindInfo.color  
-                    }
-				});
-				rules.push(rule);
-			}
-			rules.push(new OpenLayers.Rule({  	
-                elseFilter: true,  
-                symbolizer: {  
-                    fillColor: "#ffff00"  
-            	}  
-            }));
-			return rules;
+		function br2mm(lonlat, xSize, ySize){
+			var pixel = map.getViewPortPxFromLonLat(lonlat);
+			var newX = pixel.x - xSize/2;
+			var newY = pixel.y - ySize/2;
+			var newPixel = new OpenLayers.Pixel(newX, newY);
+			return map.getLonLatFromViewPortPx(newPixel);
 		}
 		
-		function addVector(datas, rules){
-			var style = new OpenLayers.Style({  
-                strokeColor: "#ffffff",  
-                strokeWidth: 1,    
-                labelAlign: "center",  
-                labelXOffset: "0",  
-                labelYOffset: "-0",  
-                fontColor: "#000000",  
-                fontFamily: "微软雅黑",  
-                fontSize:13  
-            }
-            ,{  
-                rules:rules
-            });  			
-			var vector = new OpenLayers.Layer.Vector("ThematicData",{
-				styleMap: new OpenLayers.StyleMap(style)
-			});
-			var geojson_Format = new OpenLayers.Format.GeoJSON();
+		function addMapCharts(option, datas, xSize, ySize){
+			var zoom = map.getZoom();
+			//xSize = xSize + (zoom - 1) * 40;
+			//ySize = ySize + (zoom - 1) * 40;
 			for(var i=0; i<datas.length; ++i){
 				var data = datas[i];
-				var feature = geojson_Format.read(data);
-				vector.addFeatures(feature);
+				var chartID = "chart" + data.gid;
+				var content = "<img id='" + chartID + "' src='" +
+					data.graphURL + "'>";
+				var lonlat = new OpenLayers.LonLat(data.lon, data.lat);
+				lonlat = br2mm(lonlat, xSize, ySize);
+				var popup = new OpenLayers.Popup(chartID,
+					lonlat,
+					new OpenLayers.Size(xSize, ySize),
+					content,
+					false);
+				popup.setBackgroundColor("transparent");  
+                popup.setBorder("0px #0066ff solid");  
+                popup.keepInMap = false;  
+                map.addPopup(popup,false);
 			}
-			map.addLayer(vector);
 		}
-		
-	</script> 
 
+		function removeAllPopups(){
+			while(map.popups.length > 0){
+				map.removePopup(map.popups[0]);
+			}
+		}
+	</script> 
   </head>  
 
   <body onload="load()">
   	<div id='map' style='width:100%;height:90%;'></div>
-  	<button onclick="addThematicData()">分层设色</button>
+  	<button onclick="addThematicData('pie')">饼图</button>
+  	<button onclick="addThematicData('line')">折线图</button>
+  	<button onclick="addThematicData('bar')">柱状图</button>
   </body>
 </html>

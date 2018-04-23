@@ -8,8 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -26,8 +29,13 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.general.DatasetGroup;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import com.DataCalculate.KindCalculator;
+import com.DataCalculate.KindInfo;
 import com.DataStruct.DataUtils;
+import com.DataStruct.GeoTable;
 import com.DataStruct.ThematicTable;
 import com.DrawThematicData.ChartBuilder;
 import com.DrawThematicData.ChartInfo;
@@ -35,27 +43,29 @@ import com.DrawThematicData.ChartInfo;
 public class Main {
 
 	public static void main(String args[]) {
-		//datasetTest();
-		/*
-		//drawPictureTest();
-		
-		List<String> keys = Arrays.asList("1月", "2月", "3月","4月","5月");
-		List<Double> values = Arrays.asList(21.0D, 50.0D, 152.0D, 184.0D, 299.0D);
-		List<String> rows = Arrays.asList("Series 1");
-		ChartInfo info = ChartInfo.createLineInfo("标题", "x", "y");
-		
-		JFreeChart chart = ChartBuilder.build(keys, values, rows, info);
-		
-		FileOutputStream out = null;
-		try {
-			File outFile = new File("/users/yangyuxin/test.jpg");
-			out = new FileOutputStream(outFile);
-			ChartUtilities.writeChartAsJPEG(out, chart, 600, 400);
-		} catch (Exception e) {
-			System.out.print(e.getMessage());
+		String thematicTableName = "province_thematic";
+		String mapTableName = "province";
+		GeoTable geoTable = DataUtils.getGeoTable(mapTableName);
+		ThematicTable thematicTable = DataUtils.getThematicTable(mapTableName, thematicTableName);
+		Map<Integer, Double> gid2data = thematicTable.getList("gdp08");
+
+		List<JSONObject> geolist = DataUtils.getGeometryDatas(geoTable, gid2data);
+		System.out.println(geolist.get(0).toString());
+		JSONArray geoJa = new JSONArray(geolist);
+
+		Collection<Double> values = gid2data.values();
+		List<KindInfo> kindList = KindCalculator.EqualDistanceClassification(gid2data.values(), 5);
+		List<JSONObject> kindjsonList = new ArrayList<JSONObject>();
+		for(KindInfo info : kindList){
+			kindjsonList.add(new JSONObject(info.toJson()));
 		}
-		*/
-		ThematicTest();
+		JSONArray kindJa = new JSONArray(kindjsonList);
+
+		JSONObject ret = new JSONObject();
+		//ret.put("features", geoJa);
+		ret.put("kindInfos", kindJa);
+
+		System.out.print(ret.toString());
 	}
 	
 	public static void ThematicTest(){
