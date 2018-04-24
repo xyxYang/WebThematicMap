@@ -272,8 +272,8 @@ List<GeoData> geoDatas = geoTable.getDatas();
 
   <body onload="load()">
   	<div id='map' style='width:100%;height:90%;'></div>
-  	<button onclick="addThematicData('pie')">饼图</button>
-  	<button onclick="addThematicData('line')">折线图</button>
-  	<button onclick="addThematicData('bar')">柱状图</button>
+  	<button onclick="addThematicData('pie', 'province_thematic')">饼图</button>
+  	<button onclick="addThematicData('line', 'province_thematic')">折线图</button>
+  	<button onclick="addThematicData('bar', 'province_thematic')">柱状图</button>
   </body>
 </html>

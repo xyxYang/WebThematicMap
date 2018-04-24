@@ -43,6 +43,10 @@ import com.DrawThematicData.ChartInfo;
 public class Main {
 
 	public static void main(String args[]) {
+		test();
+	}
+	
+	public static void test1(){
 		String thematicTableName = "province_thematic";
 		String mapTableName = "province";
 		GeoTable geoTable = DataUtils.getGeoTable(mapTableName);
@@ -66,6 +70,13 @@ public class Main {
 		ret.put("kindInfos", kindJa);
 
 		System.out.print(ret.toString());
+	}
+	
+	public static void test(){
+		String mapTableName = "province";
+		GeoTable geoTable = DataUtils.getGeoTable(mapTableName);
+		
+		System.out.print(DataUtils.toJson(geoTable.getJsonDatas()));
 	}
 	
 	public static void ThematicTest(){

@@ -95,6 +95,14 @@ public class GeoTable {
 	public List<GeoData> getDatas(){
 		return new ArrayList<GeoData>(this.datas);
 	}
+	
+	public List<JSONObject> getJsonDatas(){
+		List<JSONObject> ret = new ArrayList<JSONObject>();
+		for(GeoData data:datas){
+			ret.add(new JSONObject(data.toJson()));
+		}
+		return ret;
+	}
 	/*
 	public double getMinX(){
 		

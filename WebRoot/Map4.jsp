@@ -14,43 +14,62 @@
 	<script src='lib/echarts.js'></script>
 	<script type="text/javascript">
 		var map;
-		function load(){
-			var bounds= new OpenLayers.Bounds(73.44696044921875,3.408477306365967,135.08583068847656,53.557926177978516);  //设置坐标范围对象
-			var options = {				
-				projection: "EPSG:4326",		//地图投影方式
-				maxExtent:bounds,				     //坐标范围
-				uints:'degrees'	,        //单位
-				center: new OpenLayers.LonLat(116.5, 39.5)   //图形中心坐标
-			};
-			map = new OpenLayers.Map('map',options);     //构建一个地图对象，并指向后面页面中的div对象，这里是'map'
-			
-			var wms = new OpenLayers.Layer.WMS(    //构建地图服务WMS对象，
-			  	"Map Of China",         //图层名称，最好用中文，由于页面编码原因，写中文可能乱码，可以到网上搜索解决方法			
-				"http://gisserver.tianditu.com/TDTService/region/wms", 		 	//geoserver所在服务器地址及对应的地图服务		
-				{                                           //以下是具体访问参数
-					layers: "030100",  //图层名称，对应与我们自己创建的服务layers层名
-					style:'',            //样式
-					format:'image/png',   //图片格式
-					TRANSPARENT:"true",   //是否透明
+		function loadmap(chinaJson){
+			echarts.registerMap('china', chinaJson);
+			var map = echarts.init(document.getElementById('map'));
+			var option = {
+				geo:{
+					map: 'china',
+					roam: true
 				},
-				  {isBaseLayer: true}   //是否基础层，必须设置
-				);
-			map.addLayer(wms);	//增加这个wms图层到map对象
-
-			map.addControl(new OpenLayers.Control.LayerSwitcher());  //增加图层控制
-       		map.addControl(new OpenLayers.Control.MousePosition());  //增加鼠标移动显示坐标      
-       		var overviewMap =  new OpenLayers.Control.OverviewMap();
-       		overviewMap.maximized = true;    //设置为初始可见
-       		//overviewMap.autoPan = true;     //视图自动移动
-       		overviewMap.minRectSize = 1;   //鹰眼视图框的最小值
-       		map.addControl(overviewMap);    //添加鹰眼控件
-       		var zoomBox = new OpenLayers.Control.ZoomBox();
-       		zoomBox.keyMask = OpenLayers.Handler.MOD_CTRL;
-       		map.addControl(zoomBox);                                 //添加放大方法控件
-       		map.addControl(new OpenLayers.Control.NavToolbar());     //添加拉框放大工具
-       		map.addControl(new OpenLayers.Control.Scale);            //添加比例尺
-
-       		map.zoomToExtent(bounds);		//缩放到全图显示
+				series:[
+					{
+			        type: 'pie',
+			        radius: '60%',
+			        startAngle:'45',
+			        label: {
+			            normal: {
+			            	//position:'inside',
+			                show: false
+			            },
+			            emphasis: {
+			                show: false,
+			                textStyle:{
+			                  color: '#000000',
+			                  fontWeight:'bold',
+			                  fontSize:12
+			                }
+			            }
+			        },
+			        lableLine: {
+			          normal: {
+			              show: false
+			          },
+			          emphasis: {
+			              show: false
+			          }
+			        },
+			        data:[{"name":"a", "value":1}, {"name":"b", "value":2}]
+					}
+				]
+			};
+			map.setOption(option);
+		}
+		
+		function load(table){
+			var req = new XMLHttpRequest();
+			var url = "data/getGeoJson.jsp?" + "table=" + table;
+			req.open("GET", url, true);
+			req.send(null);
+			req.onreadystatechange = function f(){
+				if(req.readyState == 4)
+				{
+					var datas = req.responseText;  //返回文本数据
+					alert(datas);
+					datas = eval("(" + datas + ")");
+					loadmap(datas);
+				}
+			};  
 		}
 	</script> 
 	<script type="text/javascript">

@@ -75,7 +75,6 @@
 			var rules = new Array();
 			for(var i=0; i<kindInfos.length; ++i){
 				var kindInfo = kindInfos[i];
-				alert(kindInfo.lower);
 				var rule = new OpenLayers.Rule({
 					filter: new OpenLayers.Filter.Comparison({
 						type: OpenLayers.Filter.Comparison.BETWEEN,
@@ -130,6 +129,6 @@
 
   <body onload="load()">
   	<div id='map' style='width:100%;height:90%;'></div>
-  	<button onclick="addThematicData()">分层设色</button>
+  	<button onclick="addThematicData('province_thematic')">分层设色</button>
   </body>
 </html>

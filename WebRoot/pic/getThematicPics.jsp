@@ -10,7 +10,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 %>
 
 <%
-String thematicTableName = "province_thematic";
+String thematicTableName = new String(request.getParameter("table").getBytes("ISO-8859-1"),"UTF-8");
+String option = new String(request.getParameter("option").getBytes("ISO-8859-1"),"UTF-8");
+//String thematicTableName = "province_thematic";
 String mapTableName = "province";
 ThematicTable thematicTable = DataUtils.getThematicTable(mapTableName, thematicTableName);
 List<String> keys = thematicTable.getFields();
@@ -21,7 +23,14 @@ for(ThematicData thematicData : thematicDatas){
 	JSONObject jo = new JSONObject();
 	List<Double> values = thematicData.datas;
 	List<String> rows = Arrays.asList("Series 1");
-	ChartInfo info = ChartInfo.createLineInfo("标题", "x", "y");
+	ChartInfo info = null;
+	if(option.toLowerCase().equals("line")){
+		info = ChartInfo.createLineInfo(thematicData.name, "x", "y");
+	}else if(option.toLowerCase().equals("pie")){
+		info = ChartInfo.createPieInfo(thematicData.name);
+	}else if(option.toLowerCase().equals("bar")){
+		info = ChartInfo.createBarInfo(thematicData.name, "x", "y");
+	}
 	JFreeChart chart = ChartBuilder.build(keys, values, rows, info);
 
 	//ServletUtilities.setTempFilePrefix("public-jfreechart-");
