@@ -46,7 +46,11 @@
 		
 		function addThematicData(table){				
 			var req = new XMLHttpRequest();
-			var url = "data/getGeoColorDatas.jsp?" + "table=" + table;
+			var method = document.getElementById("method").value;
+			var num = document.getElementById("num").value;
+			var url = "data/getGeoColorDatas.jsp?" + "table=" + table
+				 + "&method=" + method
+				 + "&num=" + num;
 			req.open("GET", url, true);
 			req.send(null);
 			req.onreadystatechange = function f(){
@@ -124,6 +128,12 @@
 
   <body onload="load()">
   	<div id='map' style='width:100%;height:90%;'></div>
+  	<table>
+  		<tr>
+  			<td>方法：<input type="text" name="method" id="method"><td>
+  			<td>层数：<input type="text" name="num" id="num"><td>
+  		<tr>
+  	</table>
   	<button onclick="addThematicData('province_thematic')">分层设色</button>
   </body>
 </html>

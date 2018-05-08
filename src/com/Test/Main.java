@@ -43,7 +43,7 @@ import com.DrawThematicData.ChartInfo;
 public class Main {
 
 	public static void main(String args[]) {
-		test();
+		test1();
 	}
 	
 	public static void test1(){
@@ -58,7 +58,7 @@ public class Main {
 		JSONArray geoJa = new JSONArray(geolist);
 
 		Collection<Double> values = gid2data.values();
-		List<KindInfo> kindList = KindCalculator.EqualDistanceClassification(gid2data.values(), 5);
+		List<KindInfo> kindList = KindCalculator.instance.classification(gid2data.values(),"Quantile", 5);
 		List<JSONObject> kindjsonList = new ArrayList<JSONObject>();
 		for(KindInfo info : kindList){
 			kindjsonList.add(new JSONObject(info.toJson()));
