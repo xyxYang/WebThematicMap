@@ -14,28 +14,20 @@
 	<script src='lib/echarts.js'></script>
 	<script type="text/javascript">
 		var map;
+		var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 		function load(){
 			var bounds= new OpenLayers.Bounds(73.44696044921875,3.408477306365967,135.08583068847656,53.557926177978516);  //设置坐标范围对象
 			var options = {				
-				projection: "EPSG:4326",		//地图投影方式
-				maxExtent:bounds,				     //坐标范围
+				projection: "EPSG:900913",   //地图投影方式
+				maxExtent:bounds.transform( fromProjection, toProjection),				     //坐标范围
 				uints:'degrees'	,        //单位
-				center: new OpenLayers.LonLat(116.5, 39.5)   //图形中心坐标
+				center: new OpenLayers.LonLat(116.5, 39.5).transform( fromProjection, toProjection)   //图形中心坐标
 			};
 			map = new OpenLayers.Map('map',options);     //构建一个地图对象，并指向后面页面中的div对象，这里是'map'
-			
-			var wms = new OpenLayers.Layer.WMS(    //构建地图服务WMS对象，
-			  	"Map Of China",         //图层名称，最好用中文，由于页面编码原因，写中文可能乱码，可以到网上搜索解决方法			
-				"http://gisserver.tianditu.com/TDTService/region/wms", 		 	//geoserver所在服务器地址及对应的地图服务		
-				{                                           //以下是具体访问参数
-					layers: "030100",  //图层名称，对应与我们自己创建的服务layers层名
-					style:'',            //样式
-					format:'image/png',   //图片格式
-					TRANSPARENT:"true",   //是否透明
-				},
-				  {isBaseLayer: true}   //是否基础层，必须设置
-				);
-			map.addLayer(wms);	//增加这个wms图层到map对象
+
+			var osm = new OpenLayers.Layer.OSM();
+			map.addLayer(osm);
 
 			map.addControl(new OpenLayers.Control.LayerSwitcher());  //增加图层控制
        		map.addControl(new OpenLayers.Control.MousePosition());  //增加鼠标移动显示坐标      
@@ -92,7 +84,7 @@
 				var chartID = "chart" + data.gid;
 				var content = "<img id='" + chartID + "' src='" +
 					data.graphURL + "'>";
-				var lonlat = new OpenLayers.LonLat(data.lon, data.lat);
+				var lonlat = new OpenLayers.LonLat(data.lon, data.lat).transform(fromProjection, toProjection);;
 				lonlat = br2mm(lonlat, xSize, ySize);
 				var popup = new OpenLayers.Popup(chartID,
 					lonlat,

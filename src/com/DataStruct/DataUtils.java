@@ -76,22 +76,20 @@ public class DataUtils {
 	
 	public static List<JSONObject> getGeometryDatas(GeoTable geoTable, Map<Integer, Double> gid2data){
 		List<JSONObject> ret = new ArrayList<JSONObject>();
-		for(Entry<Integer, Double> entry:gid2data.entrySet()){
-			int gid = entry.getKey();
-			double data = entry.getValue();
-			String geoJson = geoTable.getGeoJson(gid);
-			if(geoJson == null){
-				System.out.printf("warning: gid为%d的几何要素未找到！", gid);
-				continue;
-			}
+		for(GeoData geoData : geoTable.getDatas()){
+			int gid = geoData.id;
+			String geoJson = geoData.geojson;
+			Double data = gid2data.get(gid);
 			ret.add(toGeoJson(geoJson, data));
 		}
 		return ret;
 	}
 	
-	private static JSONObject toGeoJson(String geoJson, double data){
+	private static JSONObject toGeoJson(String geoJson, Double data){
 		JSONObject properties = new JSONObject();
-		properties.put("data", data);
+		if(data != null){
+			properties.put("data", data);
+		}
 		
 		JSONObject ret = new JSONObject();
 		ret.put("type", "Feature");
